@@ -35,7 +35,20 @@ export async function POST(req) {
       expiresIn: '1h',
     });
 
-    return NextResponse.json({ token, user: { id: user.id, email: user.email, name: user.name } }, { status: 201 });
+    return NextResponse.json({ 
+      token, 
+      user: { 
+        id: user.id, 
+        email: user.email, 
+        name: user.name,
+        bio: user.bio,
+        profilePicture: user.profilePicture,
+        headerImage: user.headerImage,
+        dob: user.dob,
+        gender: user.gender,
+        quizzesTaken: user.quizzesTaken
+      } 
+    }, { status: 201 });
   } catch (error) {
     console.error('Signup error:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });

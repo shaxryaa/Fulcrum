@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 
-export default function AnalyticsDashboard({ tasks = [], sessions = [] }) {
+export default function AnalyticsDashboard({ tasks = [], sessions = [], quizCount = 0 }) {
   // Calculate Category Distribution from COMPLETED tasks
   const categoryStats = useMemo(() => {
     const completedTasks = tasks.filter(t => t.completed);
