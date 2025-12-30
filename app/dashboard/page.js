@@ -153,7 +153,8 @@ export default function Dashboard() {
 
         <main className="px-10 py-0">
           
-          {/* Top Section: Task List & Motivation */}
+          {/* --- Section 1: Productivity Core --- */}
+          {/* Task List (Left) and Daily Motivation (Right) */}
           <div className="mb-12 grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
              <div className="lg:col-span-2">
                  <TaskList
@@ -168,7 +169,7 @@ export default function Dashboard() {
              </div>
           </div>
 
-          {/* Streak Section */}
+          {/* --- Section 2: Consistency Visuals --- */}
           <section className="mb-12">
              <h2 className="text-xl font-bold mb-4">Consistency</h2>
              <StreakGraph sessions={streakData} userEmail={user?.email} />
@@ -177,7 +178,11 @@ export default function Dashboard() {
           {/* Analytics Section */}
           <section className="mb-12">
              <h2 className="text-xl font-bold mb-4">Progress Analytics</h2>
-             <AnalyticsDashboard tasks={tasks} sessions={streakData} />
+             <AnalyticsDashboard 
+                tasks={tasks} 
+                sessions={streakData} 
+                quizCount={user?.quizzesTaken || 0}
+             />
           </section>
 
           {/* Planning Section Grid */}

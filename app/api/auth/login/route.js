@@ -41,7 +41,8 @@ export async function POST(req) {
         profilePicture: user.profilePicture,
         headerImage: user.headerImage,
         dob: user.dob,
-        gender: user.gender
+        gender: user.gender,
+        quizzesTaken: user.quizzesTaken
       } 
     }, { status: 200 });
   } catch (error) {

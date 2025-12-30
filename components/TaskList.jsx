@@ -58,7 +58,8 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
             No tasks yet. Add one to get started!
           </p>
         ) : (
-          <div className="space-y-1">
+          <div className="space-y-3">
+            {/* Render Pending Tasks */}
             {sortedTasks.map((task) => (
               <TaskItem
                 key={task.id}
@@ -67,6 +68,13 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
                 onDelete={onDeleteTask}
               />
             ))}
+
+            {/* Empty State */}
+            {tasks.filter(t => !t.completed).length === 0 && (
+                <div className="text-center py-10 text-gray-400 text-sm">
+                    No active tasks. Time to relax!
+                </div>
+            )}
           </div>
         )}
       </div>

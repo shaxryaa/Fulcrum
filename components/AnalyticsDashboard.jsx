@@ -112,7 +112,7 @@ export default function AnalyticsDashboard({ tasks = [], sessions = [] }) {
             
             <div className="mt-6 pt-6 border-t border-gray-100 flex justify-between items-center">
                  <div>
-                    <div className="text-2xl font-bold">0</div>
+                    <div className="text-2xl font-bold">{quizCount}</div>
                     <div className="text-xs text-gray-400">Flashcard Quizzes</div>
                  </div>
                  <div>

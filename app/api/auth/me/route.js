@@ -28,7 +28,8 @@ export async function GET(req) {
         profilePicture: true,
         headerImage: true,
         dob: true,
-        gender: true
+        gender: true,
+        quizzesTaken: true
       },
     });
 

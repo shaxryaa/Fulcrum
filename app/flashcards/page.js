@@ -80,7 +80,7 @@ export default function FlashcardsPage() {
     ? cards 
     : cards.filter(c => c.tags.includes(activeTag));
 
-  // Quiz Logic
+  // --- Quiz Logic ---
   const startQuiz = () => {
      setQuizMode(true);
      setCurrentQuizIndex(0);
@@ -133,7 +133,14 @@ export default function FlashcardsPage() {
                                         setCurrentQuizIndex(prev => prev + 1);
                                         setShowAnswer(false);
                                     } else {
-                                        alert('Is easy!');
+                                        // Quiz Finished
+                                        const token = localStorage.getItem('token');
+                                        fetch(`${API_URL}/flashcards/quiz-complete`, {
+                                            method: 'POST',
+                                            headers: { Authorization: `Bearer ${token}` }
+                                        }).catch(console.error);
+                                        
+                                        alert('Nice work! Quiz completed.');
                                         setQuizMode(false);
                                     }
                                 }}

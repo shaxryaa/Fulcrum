@@ -17,6 +17,7 @@ model User {
   bio            String?
   dob            DateTime?
   gender         String?
+  quizzesTaken   Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   tasks          Task[]
