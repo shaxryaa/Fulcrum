@@ -30,6 +30,11 @@
   --color-gray-text: #666666;
   --color-gray-hover: #F9F9F9;
   
+  /* Difficulty Colors */
+  --difficulty-hard: #DC2626;
+  --difficulty-medium: #FBBF24;
+  --difficulty-easy: #10B981;
+  
   /* Spacing - 8px Grid System */
   --spacing-xs: 8px;
   --spacing-sm: 16px;

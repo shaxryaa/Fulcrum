@@ -12,24 +12,103 @@ model User {
   name           String
   email          String   @unique
   password       String
-  dailyHighlight String?
-  currentStreak  Int      @default(0)
+  profilePicture String?
+  headerImage    String?
+  bio            String?
+  dob            DateTime?
+  gender         String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   tasks          Task[]
+  focusSessions  FocusSession[]
+  flashcards     Flashcard[]
+  visionGoals    VisionGoal[]
+  journalEntries JournalEntry[]
+  lifeAreas      LifeArea[]
 }
 
+
 model Task {
-  id           String   @id @default(cuid())
-  title        String
-  completed    Boolean  @default(false)
-  priority     String   @default("medium") // "high", "medium", "low"
-  category     String   @default("General")
-  timeEstimate String   @default("30m")
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  title       String
+  completed   Boolean  @default(false)
+  priority    String   @default("medium") // "high", "medium", "low"
+  difficulty  String   @default("medium") // "hard", "medium", "easy"
+  category    String   @default("Work")   // Re-added for analytics
+  dueDate     DateTime @default(now())
+  isHighlight Boolean  @default(false)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([dueDate])
+}
+
+model FocusSession {
+  id        String   @id @default(cuid())
+  duration  Int      // Duration in minutes
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model LifeArea {
+  id        String   @id @default(uuid())
+  name      String
+  rating    Int      @default(0) // 0-10
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Flashcard {
+  id        String   @id @default(cuid())
+  front     String
+  back      String
+  tags      String[] // For categorization
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
 }
+
+model VisionGoal {
+  id          String   @id @default(cuid())
+  type        String   // "weekly", "monthly", "yearly"
+  title       String
+  why         String?  // The "Why" behind the goal
+  completed   Boolean  @default(false)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model JournalEntry {
+  id        String   @id @default(cuid())
+  wentWell  String?
+  wentBad   String?
+  notes     String?
+  date      DateTime @default(now()) // One per day usually
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([date])
+}
+

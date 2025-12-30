@@ -32,7 +32,7 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     // Verify task belongs to user
@@ -55,8 +55,10 @@ export async function PATCH(request, { params }) {
         ...(body.title !== undefined && { title: body.title }),
         ...(body.completed !== undefined && { completed: body.completed }),
         ...(body.priority !== undefined && { priority: body.priority }),
+        ...(body.difficulty !== undefined && { difficulty: body.difficulty }),
         ...(body.category !== undefined && { category: body.category }),
-        ...(body.timeEstimate !== undefined && { timeEstimate: body.timeEstimate })
+        ...(body.dueDate !== undefined && { dueDate: new Date(body.dueDate) }),
+        ...(body.isHighlight !== undefined && { isHighlight: body.isHighlight })
       }
     });
 
@@ -75,7 +77,7 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Verify task belongs to user
     const existingTask = await prisma.task.findUnique({

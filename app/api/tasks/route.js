@@ -65,18 +65,30 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { title, priority = 'medium', category = 'General', timeEstimate = '30m' } = body;
+    const { 
+      title, 
+      priority = 'medium', 
+      difficulty = 'medium',
+      category = 'Work',
+      dueDate,
+      isHighlight = false
+    } = body;
 
     if (!title || title.trim() === '') {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
     }
 
+    // If no due date provided, default to today
+    const taskDueDate = dueDate ? new Date(dueDate) : new Date();
+
     const task = await prisma.task.create({
       data: {
         title: title.trim(),
         priority,
+        difficulty,
         category,
-        timeEstimate,
+        dueDate: taskDueDate,
+        isHighlight,
         userId: user.id
       }
     });

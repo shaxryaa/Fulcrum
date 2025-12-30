@@ -15,7 +15,7 @@ export default function Hero() {
           <div className="flex flex-col items-center text-center gap-y-2 md:gap-y-6 mb-12 w-full px-4">
             
             {/* Line 1: Why be [Image] */}
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
               <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter leading-[0.9]">
                 Why be
               </h1>
@@ -36,7 +36,7 @@ export default function Hero() {
             </h1>
 
             {/* Line 3: [Image] */}
-            <div className="relative w-28 h-28 md:w-40 md:h-40 -rotate-3  mt-2 md:mt-4">
+            <div className="relative w-28 h-28 md:w-50 md:h-50 -rotate-3  mt-2 md:mt-4">
               <Image 
                 src="/illustration-in-control.png" 
                 alt="In Control" 

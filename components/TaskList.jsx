@@ -5,141 +5,172 @@ import TaskItem from './TaskItem';
 
 export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask }) {
   const [isAdding, setIsAdding] = useState(false);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [newTaskPriority, setNewTaskPriority] = useState('medium');
-  const [newTaskCategory, setNewTaskCategory] = useState('General');
-  const [newTaskTime, setNewTaskTime] = useState('30m');
-
-  // Group tasks by priority
-  const highPriority = tasks.filter(t => t.priority === 'high' && !t.completed);
-  const mediumPriority = tasks.filter(t => t.priority === 'medium' && !t.completed);
-  const lowPriority = tasks.filter(t => t.priority === 'low' && !t.completed);
-  const completed = tasks.filter(t => t.completed);
+  const [newTask, setNewTask] = useState({
+    title: '',
+    priority: 'medium',
+    difficulty: 'medium',
+    category: 'Work',
+    dueDate: '',
+    isHighlight: false
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newTaskTitle.trim()) {
-      await onAddTask({
-        title: newTaskTitle.trim(),
-        priority: newTaskPriority,
-        category: newTaskCategory,
-        timeEstimate: newTaskTime
+    if (newTask.title.trim()) {
+      await onAddTask(newTask);
+      setNewTask({
+        title: '',
+        priority: 'medium',
+        difficulty: 'medium',
+        category: 'Work',
+        dueDate: '',
+        isHighlight: false
       });
-      setNewTaskTitle('');
-      setNewTaskPriority('medium');
-      setNewTaskCategory('General');
-      setNewTaskTime('30m');
       setIsAdding(false);
     }
   };
 
+  // Filter out completed tasks and sort: highlighted first, then by due date
+  const activeTasks = tasks.filter(t => !t.completed);
+  const sortedTasks = [...activeTasks].sort((a, b) => {
+    if (a.isHighlight && !b.isHighlight) return -1;
+    if (!a.isHighlight && b.isHighlight) return 1;
+    return new Date(a.dueDate) - new Date(b.dueDate);
+  });
+
+  const difficultyColors = {
+    hard: '#DC2626',
+    medium: '#FBBF24',
+    easy: '#10B981'
+  };
+
+  const categories = ['Work', 'Personal', 'Study', 'Health', 'General'];
+
   return (
-    <section className="min-h-[600px]">
-      <h2 className="text-[2rem] font-bold tracking-tight mb-8">Today's Tasks</h2>
+    <div className="w-full max-w-xl">
+      {/* Header */}
+      <h2 className="text-2xl font-bold mb-6">Today's Tasks</h2>
 
-      {/* High Priority Tasks */}
-      {highPriority.length > 0 && (
-        <div className="mb-6">
-          {highPriority.map(task => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              onToggle={onToggleTask}
-              onDelete={onDeleteTask}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Medium Priority Tasks */}
-      {mediumPriority.length > 0 && (
-        <div className="mb-6">
-          {mediumPriority.map(task => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              onToggle={onToggleTask}
-              onDelete={onDeleteTask}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Low Priority Tasks */}
-      {lowPriority.length > 0 && (
-        <div className="mb-6">
-          {lowPriority.map(task => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              onToggle={onToggleTask}
-              onDelete={onDeleteTask}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Completed Tasks */}
-      {completed.length > 0 && (
-        <div className="mb-6">
-          {completed.map(task => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              onToggle={onToggleTask}
-              onDelete={onDeleteTask}
-            />
-          ))}
-        </div>
-      )}
+      {/* Task List */}
+      <div className="bg-white border border-[#E5E5E5] rounded-lg p-4 mb-4">
+        {sortedTasks.length === 0 ? (
+          <p className="text-center text-[#999] py-8 text-sm">
+            No tasks yet. Add one to get started!
+          </p>
+        ) : (
+          <div className="space-y-1">
+            {sortedTasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                onToggle={onToggleTask}
+                onDelete={onDeleteTask}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Add Task Form */}
       {isAdding ? (
-        <form onSubmit={handleSubmit} className="border-2 border-black rounded p-6 mb-4 bg-white">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white border-2 border-black rounded-lg p-4 space-y-3"
+        >
           <input
             type="text"
-            value={newTaskTitle}
-            onChange={(e) => setNewTaskTitle(e.target.value)}
-            placeholder="Task title..."
-            className="w-full text-lg mb-4 px-3 py-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-black"
+            value={newTask.title}
+            onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+            placeholder="Task name..."
+            className="w-full px-3 py-2 border border-[#E5E5E5] rounded text-sm focus:outline-none focus:border-black"
             autoFocus
           />
-          <div className="flex gap-4 mb-4">
-            <select
-              value={newTaskPriority}
-              onChange={(e) => setNewTaskPriority(e.target.value)}
-              className="px-3 py-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-black"
-            >
-              <option value="high">High Priority</option>
-              <option value="medium">Medium Priority</option>
-              <option value="low">Low Priority</option>
-            </select>
-            <input
-              type="text"
-              value={newTaskCategory}
-              onChange={(e) => setNewTaskCategory(e.target.value)}
-              placeholder="Category"
-              className="px-3 py-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-black"
-            />
-            <input
-              type="text"
-              value={newTaskTime}
-              onChange={(e) => setNewTaskTime(e.target.value)}
-              placeholder="Time estimate"
-              className="px-3 py-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-black w-32"
-            />
+
+          <div className="grid grid-cols-2 gap-3">
+            {/* Priority */}
+            <div>
+              <label className="block text-xs text-[#666] mb-1">Priority</label>
+              <select
+                value={newTask.priority}
+                onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+                className="w-full px-3 py-2 border border-[#E5E5E5] rounded text-sm focus:outline-none focus:border-black"
+              >
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+
+            {/* Difficulty */}
+            <div>
+              <label className="block text-xs text-[#666] mb-1">Difficulty</label>
+              <select
+                value={newTask.difficulty}
+                onChange={(e) => setNewTask({ ...newTask, difficulty: e.target.value })}
+                className="w-full px-3 py-2 border border-[#E5E5E5] rounded text-sm focus:outline-none focus:border-black"
+                style={{
+                  backgroundImage: `linear-gradient(to right, ${difficultyColors[newTask.difficulty]} 12px, transparent 12px)`
+                }}
+              >
+                <option value="hard">🔴 Hard</option>
+                <option value="medium">🟡 Medium</option>
+                <option value="easy">🟢 Easy</option>
+              </select>
+            </div>
           </div>
-          <div className="flex gap-2">
+
+          <div className="grid grid-cols-2 gap-3">
+             {/* Category */}
+             <div>
+              <label className="block text-xs text-[#666] mb-1">Category</label>
+              <select
+                value={newTask.category}
+                onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
+                className="w-full px-3 py-2 border border-[#E5E5E5] rounded text-sm focus:outline-none focus:border-black"
+              >
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Due Date */}
+            <div>
+              <label className="block text-xs text-[#666] mb-1">
+                Due Date
+              </label>
+              <input
+                type="date"
+                value={newTask.dueDate}
+                onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                className="w-full px-3 py-2 border border-[#E5E5E5] rounded text-sm focus:outline-none focus:border-black"
+              />
+            </div>
+          </div>
+
+          {/* Highlight Checkbox */}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={newTask.isHighlight}
+              onChange={(e) => setNewTask({ ...newTask, isHighlight: e.target.checked })}
+              className="w-4 h-4 border-2 border-black rounded-none cursor-pointer"
+            />
+            <span className="text-sm">Mark as highlight of the day ★</span>
+          </label>
+
+          {/* Buttons */}
+          <div className="flex gap-2 pt-2">
             <button
               type="submit"
-              className="px-6 py-2 bg-black text-white rounded transition-all duration-200 hover:bg-[#333]"
+              className="flex-1 px-4 py-2 bg-black text-white rounded text-sm font-medium hover:bg-[#333] transition-colors duration-200"
             >
               Add Task
             </button>
             <button
               type="button"
               onClick={() => setIsAdding(false)}
-              className="px-6 py-2 border-2 border-black bg-white text-black rounded transition-all duration-200 hover:bg-black hover:text-white"
+              className="px-4 py-2 border border-black bg-white text-black rounded text-sm font-medium hover:bg-black hover:text-white transition-all duration-200"
             >
               Cancel
             </button>
@@ -148,12 +179,11 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
       ) : (
         <button
           onClick={() => setIsAdding(true)}
-          className="w-full py-4 px-6 mt-4 border-2 border-black rounded bg-white text-black font-medium text-base flex items-center justify-center gap-2 transition-all duration-200 hover:bg-black hover:text-white hover:-translate-y-0.5 hover:shadow-[0px_2px_4px_rgba(0,0,0,0.05)]"
+          className="w-full py-3 border-2 border-dashed border-[#E5E5E5] rounded-lg text-[#666] hover:border-black hover:text-black transition-all duration-200 text-sm font-medium"
         >
-          <span className="text-xl font-light">+</span>
-          <span>Add Task</span>
+          + Add Task
         </button>
       )}
-    </section>
+    </div>
   );
 }
