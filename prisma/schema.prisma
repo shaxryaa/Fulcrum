@@ -38,6 +38,7 @@ model Task {
   category    String   @default("Work")   // Re-added for analytics
   dueDate     DateTime @default(now())
   isHighlight Boolean  @default(false)
+  isSpacedRepetition Boolean @default(false)
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())

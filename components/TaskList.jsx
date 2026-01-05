@@ -11,7 +11,8 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
     difficulty: 'medium',
     category: 'Work',
     dueDate: '',
-    isHighlight: false
+    isHighlight: false,
+    spacedRepetition: false
   });
 
   const handleSubmit = async (e) => {
@@ -24,15 +25,26 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
         difficulty: 'medium',
         category: 'Work',
         dueDate: '',
-        isHighlight: false
+        isHighlight: false,
+        spacedRepetition: false
       });
       setIsAdding(false);
     }
   };
 
-  // Filter out completed tasks and sort: highlighted first, then by due date
   const activeTasks = tasks.filter(t => !t.completed);
-  const sortedTasks = [...activeTasks].sort((a, b) => {
+  
+  const visibleTasks = activeTasks.filter(t => {
+      if (!t.isSpacedRepetition) return true;
+      
+      const due = new Date(t.dueDate);
+      const now = new Date();
+      const dueDay = new Date(due).setHours(0,0,0,0);
+      const todayDay = new Date(now).setHours(0,0,0,0);
+      return dueDay <= todayDay;
+  });
+
+  const sortedTasks = [...visibleTasks].sort((a, b) => {
     if (a.isHighlight && !b.isHighlight) return -1;
     if (!a.isHighlight && b.isHighlight) return 1;
     return new Date(a.dueDate) - new Date(b.dueDate);
@@ -48,10 +60,8 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
 
   return (
     <div className="w-full max-w-xl">
-      {/* Header */}
       <h2 className="text-2xl font-bold mb-6">Today's Tasks</h2>
 
-      {/* Task List */}
       <div className="bg-white border border-[#E5E5E5] rounded-lg p-4 mb-4">
         {sortedTasks.length === 0 ? (
           <p className="text-center text-[#999] py-8 text-sm">
@@ -59,7 +69,6 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
           </p>
         ) : (
           <div className="space-y-3">
-            {/* Render Pending Tasks */}
             {sortedTasks.map((task) => (
               <TaskItem
                 key={task.id}
@@ -69,8 +78,7 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
               />
             ))}
 
-            {/* Empty State */}
-            {tasks.filter(t => !t.completed).length === 0 && (
+             {tasks.filter(t => !t.completed).length === 0 && (
                 <div className="text-center py-10 text-gray-400 text-sm">
                     No active tasks. Time to relax!
                 </div>
@@ -79,8 +87,7 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
         )}
       </div>
 
-      {/* Add Task Form */}
-      {isAdding ? (
+       {isAdding ? (
         <form
           onSubmit={handleSubmit}
           className="bg-white border-2 border-black rounded-lg p-4 space-y-3"
@@ -95,7 +102,6 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
           />
 
           <div className="grid grid-cols-2 gap-3">
-            {/* Priority */}
             <div>
               <label className="block text-xs text-[#666] mb-1">Priority</label>
               <select
@@ -109,8 +115,7 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
               </select>
             </div>
 
-            {/* Difficulty */}
-            <div>
+             <div>
               <label className="block text-xs text-[#666] mb-1">Difficulty</label>
               <select
                 value={newTask.difficulty}
@@ -128,7 +133,6 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-             {/* Category */}
              <div>
               <label className="block text-xs text-[#666] mb-1">Category</label>
               <select
@@ -142,8 +146,7 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
               </select>
             </div>
 
-            {/* Due Date */}
-            <div>
+             <div>
               <label className="block text-xs text-[#666] mb-1">
                 Due Date
               </label>
@@ -156,19 +159,29 @@ export default function TaskList({ tasks, onAddTask, onToggleTask, onDeleteTask 
             </div>
           </div>
 
-          {/* Highlight Checkbox */}
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={newTask.isHighlight}
-              onChange={(e) => setNewTask({ ...newTask, isHighlight: e.target.checked })}
-              className="w-4 h-4 border-2 border-black rounded-none cursor-pointer"
-            />
-            <span className="text-sm">Mark as highlight of the day ★</span>
-          </label>
+           <div className="flex flex-col gap-2">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={newTask.isHighlight}
+                onChange={(e) => setNewTask({ ...newTask, isHighlight: e.target.checked })}
+                className="w-4 h-4 border-2 border-black rounded-none cursor-pointer"
+              />
+              <span className="text-sm">Mark as highlight of the day ★</span>
+            </label>
 
-          {/* Buttons */}
-          <div className="flex gap-2 pt-2">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={newTask.spacedRepetition}
+                onChange={(e) => setNewTask({ ...newTask, spacedRepetition: e.target.checked })}
+                className="w-4 h-4 border-2 border-black rounded-none cursor-pointer"
+              />
+              <span className="text-sm text-gray-600">Spaced Repetition (Reviews: +1d, +3d, +7d)</span>
+            </label>
+          </div>
+
+           <div className="flex gap-2 pt-2">
             <button
               type="submit"
               className="flex-1 px-4 py-2 bg-black text-white rounded text-sm font-medium hover:bg-[#333] transition-colors duration-200"

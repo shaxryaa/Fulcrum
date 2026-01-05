@@ -71,7 +71,8 @@ export async function POST(request) {
       difficulty = 'medium',
       category = 'Work',
       dueDate,
-      isHighlight = false
+      isHighlight = false,
+      spacedRepetition = false
     } = body;
 
     if (!title || title.trim() === '') {
@@ -89,9 +90,33 @@ export async function POST(request) {
         category,
         dueDate: taskDueDate,
         isHighlight,
+        isSpacedRepetition: spacedRepetition, // Save flag
         userId: user.id
       }
     });
+
+    // Handle Spaced Repetition
+    if (spacedRepetition) {
+        const offsets = [1, 4, 7]; // Updated offsets: +1, +4, +7
+        const repetitionTasks = offsets.map(days => {
+            const nextDate = new Date(taskDueDate);
+            nextDate.setDate(nextDate.getDate() + days);
+            return {
+                title: title.trim(),
+                priority,
+                difficulty,
+                category,
+                dueDate: nextDate,
+                isHighlight: false,
+                isSpacedRepetition: true, // Flag clones too
+                userId: user.id
+            };
+        });
+
+        await prisma.task.createMany({
+            data: repetitionTasks
+        });
+    }
 
     return NextResponse.json(task, { status: 201 });
   } catch (error) {

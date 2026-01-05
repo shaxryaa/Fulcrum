@@ -8,18 +8,15 @@ import LeftSidebar from '@/components/LeftSidebar';
 export default function FocusPage() {
   const router = useRouter();
   
-  // Timer State
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [mode, setMode] = useState('work'); // 'work' or 'break'
+  const [mode, setMode] = useState('work');
   const [customDuration, setCustomDuration] = useState(25);
 
-  // Audio State
-  const [audioBase, setAudioBase] = useState(null); // 'white_noise', 'rain', 'cafe'
+  const [audioBase, setAudioBase] = useState(null);
   const audioRef = useRef(null);
 
-  // Progress State
   const totalSeconds = mode === 'work' ? customDuration * 60 : 5 * 60;
   const currentSeconds = minutes * 60 + seconds;
   const progress = ((totalSeconds - currentSeconds) / totalSeconds) * 100;
@@ -48,7 +45,6 @@ export default function FocusPage() {
   const completeSession = async () => {
       setIsActive(false);
       
-      // Play alarm sound (mock)
       const audio = new Audio('/sounds/alarm.mp3'); 
       audio.play().catch(e => console.log('Audio play failed (no file)'));
 
@@ -95,7 +91,6 @@ export default function FocusPage() {
       }
   };
 
-  // Audio Logic
   const handleAudioChange = (type) => {
       if (audioBase === type) {
           setAudioBase(null);
@@ -107,19 +102,22 @@ export default function FocusPage() {
           setAudioBase(type);
           if(audioRef.current) audioRef.current.pause();
           
-          // In a real app, these files would exist in /public/sounds/
-          // For demo, we just log. 
-          // Note: Browser policy blocks autoplay often, but click handlers work.
           console.log(`Playing ${type}`);
           
-          // Placeholder for real audio
-          // audioRef.current = new Audio(`/sounds/${type}.mp3`);
-          // audioRef.current.loop = true;
-          // audioRef.current.play();
+          if (!audioRef.current) {
+              audioRef.current = new Audio(`/sounds/${type}.mp3`);
+              audioRef.current.loop = true;
+          } else {
+              audioRef.current.src = `/sounds/${type}.mp3`;
+          }
+          
+          audioRef.current.play().catch(e => {
+              console.error("Audio playback failed:", e);
+              // alert(`Please add ${type}.mp3 to public/sounds folder!`);
+          });
       }
   };
 
-  // SVG Progress Circle
   const radius = 120;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
@@ -129,7 +127,6 @@ export default function FocusPage() {
       <LeftSidebar activeItem="focus" />
       <div className="ml-48 min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
           
-          {/* Background Ambient Visuals (Optional) */}
           <div className={`absolute inset-0 opacity-5 pointer-events-none transition-colors duration-1000 ${
               mode === 'break' ? 'bg-green-100' : 'bg-gray-100'
           }`}></div>
@@ -142,9 +139,7 @@ export default function FocusPage() {
                   {mode === 'work' ? 'Stay distracted-free.' : 'Recharge your mind.'}
               </p>
 
-              {/* Timer Circle */}
               <div className="relative w-80 h-80 mx-auto mb-12">
-                  {/* Background Circle */}
                   <svg className="w-full h-full transform -rotate-90">
                       <circle
                           cx="160"
@@ -168,7 +163,6 @@ export default function FocusPage() {
                       />
                   </svg>
                   
-                  {/* Time Display */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <span className="text-6xl font-bold tabular-nums tracking-tighter">
                           {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
@@ -232,7 +226,7 @@ export default function FocusPage() {
                               </button>
                           ))}
                       </div>
-                      {audioBase && <p className="text-xs text-black mt-2">Playing: {audioBase.replace('_', ' ')} (Placeholder)</p>}
+                      {audioBase && <p className="text-xs text-black mt-2">Playing: {audioBase.replace('_', ' ')}</p>}
                   </div>
               </div>
           </div>
