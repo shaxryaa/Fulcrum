@@ -64,71 +64,17 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Dashboard Placeholder - Skeleton UI */}
-        <div className="w-full max-w-[1400px] relative px-4 sm:px-6 lg:px-8 perspective-1000">
-          <div className="aspect-[16/10] w-full bg-white rounded-t-2xl border border-gray-200 shadow-2xl overflow-hidden flex flex-col transform rotate-x-2 transition-transform duration-700 hover:rotate-x-0">
-            
-            {/* Fake Browser Header */}
-            <div className="h-10 bg-gray-50 border-b border-gray-200 flex items-center px-4 gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-400"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-              <div className="w-3 h-3 rounded-full bg-green-400"></div>
-              <div className="ml-4 h-6 w-64 bg-gray-200 rounded-md opacity-50"></div>
-            </div>
-
-            {/* Skeleton Content */}
-            <div className="flex-1 p-6 grid grid-cols-12 gap-6 bg-gray-50/50">
-              {/* Sidebar */}
-              <div className="col-span-2 hidden md:flex flex-col gap-4">
-                <div className="h-8 w-full bg-gray-200 rounded-md animate-pulse"></div>
-                <div className="h-4 w-3/4 bg-gray-200 rounded-md opacity-60"></div>
-                <div className="h-4 w-2/3 bg-gray-200 rounded-md opacity-60"></div>
-                <div className="h-4 w-4/5 bg-gray-200 rounded-md opacity-60"></div>
-              </div>
-              
-              {/* Main Content */}
-              <div className="col-span-12 md:col-span-10 flex flex-col gap-6">
-                {/* Header */}
-                <div className="flex justify-between items-center">
-                  <div className="h-10 w-48 bg-gray-200 rounded-lg animate-pulse"></div>
-                  <div className="flex gap-2">
-                    <div className="h-10 w-10 bg-gray-200 rounded-full"></div>
-                    <div className="h-10 w-10 bg-gray-200 rounded-full"></div>
-                  </div>
-                </div>
-                
-                {/* Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-40 bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-col justify-between">
-                      <div className="flex justify-between">
-                        <div className="h-8 w-8 bg-gray-100 rounded-full"></div>
-                        <div className="h-4 w-12 bg-gray-100 rounded-full"></div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="h-4 w-3/4 bg-gray-100 rounded"></div>
-                        <div className="h-12 w-full bg-gray-50 rounded"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Chart Area */}
-                <div className="h-64 bg-white rounded-xl border border-gray-100 shadow-sm p-6 flex items-end gap-4">
-                  {[40, 70, 45, 90, 60, 80, 50, 75, 60, 95].map((h, i) => (
-                    <div key={i} className="flex-1 bg-black/5 rounded-t-sm hover:bg-black/10 transition-colors" style={{ height: `${h}%` }}></div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Overlay Text until actual screenshot */}
-            <div className="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-[1px]">
-              <span className="bg-black/80 text-white px-6 py-2 rounded-full text-sm font-medium shadow-lg backdrop-blur-md">
-                Dashboard Preview Coming Soon
-              </span>
-            </div>
-
+        {/* Dashboard Preview */}
+        <div className="w-full max-w-[1200px] relative px-4 sm:px-6 lg:px-8 mt-8 mb-12">
+          <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-2xl border border-gray-200 group">
+            <Image 
+              src="/dashboard-mockup.png" 
+              alt="Fulcrum Dashboard Interface" 
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.01]"
+              priority
+              sizes="(max-width: 768px) 100vw, 1200px"
+            />
           </div>
         </div>
         

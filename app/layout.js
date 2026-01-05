@@ -15,7 +15,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${newsreader.className} bg-white text-black antialiased`}>{children}</body>
+      <body className={`${newsreader.className} bg-white text-black antialiased`} suppressHydrationWarning={true}>{children}</body>
     </html>
   );
 }

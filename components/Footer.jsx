@@ -25,7 +25,7 @@ export default function Footer() {
            <Link href="#" className="text-gray-400 hover:text-black transition-colors">
               <Twitter className="h-5 w-5" />
            </Link>
-           <Link href="https://github.com/shauryasharma/fulcrum" className="text-gray-400 hover:text-black transition-colors">
+           <Link href="https://github.com/shaxryaa/Fulcrum" className="text-gray-400 hover:text-black transition-colors">
               <Github className="h-5 w-5" />
            </Link>
         </div>
